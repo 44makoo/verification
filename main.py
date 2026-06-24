@@ -80,7 +80,7 @@ class BotVerificaAvanzato(commands.Bot):
 bot = BotVerificaAvanzato()
 
 # Comando Slash per creare il widget di verifica
-@bot.tree.command(name="setup_verifica", description="Invia il widget con il pulsante di verifica nel canale corrente.")
+@bot.tree.command(name="setup", description="Invia il widget di verifica.")
 async def setup_verifica(interaction: discord.Interaction):
     # 1. Diciamo SUBITO a Discord che stiamo elaborando il comando, evitando il blocco dei 3 secondi
     await interaction.response.defer(ephemeral=True)
