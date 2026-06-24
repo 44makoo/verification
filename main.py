@@ -1,4 +1,3 @@
-
 import os
 import discord
 from discord import app_commands
@@ -83,11 +82,15 @@ bot = BotVerificaAvanzato()
 # Comando Slash per creare il widget di verifica
 @bot.tree.command(name="setup_verifica", description="Invia il widget con il pulsante di verifica nel canale corrente.")
 async def setup_verifica(interaction: discord.Interaction):
+    # 1. Diciamo SUBITO a Discord che stiamo elaborando il comando, evitando il blocco dei 3 secondi
+    await interaction.response.defer(ephemeral=True)
+
     # Controllo se l'utente ha il ruolo dello Staff abilitato (ID_RUOLO_STAFF_SETUP)
     ruolo_staff = interaction.guild.get_role(ID_RUOLO_STAFF_SETUP)
     
     if ruolo_staff not in interaction.user.roles:
-        await interaction.response.send_message("❌ Non hai i permessi necessari (ruolo richiesto) per usare questo comando.", ephemeral=True)
+        # Usiamo followup perché l'interazione iniziale è stata messa in "attesa" (deferred)
+        await interaction.followup.send("❌ Non hai i permessi necessari (ruolo richiesto) per usare questo comando.", ephemeral=True)
         return
 
     # Invia il messaggio con la vista persistente
@@ -96,8 +99,8 @@ async def setup_verifica(interaction: discord.Interaction):
     # Inviamo il messaggio nel canale in cui è stato digitato il comando
     await interaction.channel.send(content=testo_widget, view=VistaVerificaPrincipale())
     
-    # Risposta effimera di conferma visibile solo a chi ha eseguito il comando
-    await interaction.response.send_message("✅ Widget di verifica inviato con successo!", ephemeral=True)
+    # 2. Risposta finale di conferma sempre tramite followup
+    await interaction.followup.send("✅ Widget di verifica inviato con successo!", ephemeral=True)
 
 
 # Recupera il token in modo sicuro dalle variabili d'ambiente di Railway
